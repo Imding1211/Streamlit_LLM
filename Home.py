@@ -3,6 +3,7 @@ from setting_controller import SettingController
 from model_controller import ModelController
 
 import streamlit as st
+import time
 
 #=============================================================================#
 
@@ -16,8 +17,8 @@ ModelController = ModelController()
 st.set_page_config(layout="wide")
 
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "system", "content": "使用繁體中文回答問題"}]
-    st.session_state.messages.append({"role": "assistant", "content": "✋ Hi~ 請問想詢問什麼問題呢？"})
+    st.session_state.messages = [{"role": "system", "content": "使用繁體中文回答問題", "response_time": 0}]
+    st.session_state.messages.append({"role": "assistant", "content": "✋ Hi~ 請問想詢問什麼問題呢？", "response_time": 0})
 
 #=============================================================================#
 
@@ -35,6 +36,9 @@ for message in st.session_state.messages:
         with st.chat_message("assistant", avatar="🤖"):
             st.markdown(message["content"])
 
+            if message['response_time'] > 0:
+                st.caption(f'Response Time: {message["response_time"]}')
+
 #-----------------------------------------------------------------------------#
 
 if question := st.chat_input("輸入問題"):
@@ -47,6 +51,13 @@ if question := st.chat_input("輸入問題"):
 #-----------------------------------------------------------------------------#
 
     with st.chat_message("assistant", avatar="🤖"):
+        
+        start_time = time.time()
+
         response = st.write_stream(ModelController.generate_response(st.session_state.messages))
 
-    st.session_state.messages.append({"role": "assistant", "content": response})
+        end_time = time.time()
+
+        st.caption(f'Response Time: {round(end_time - start_time, 2)}')
+
+    st.session_state.messages.append({"role": "assistant", "content": response, "response_time": round(end_time - start_time, 2)})
