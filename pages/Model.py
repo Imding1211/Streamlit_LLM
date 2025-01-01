@@ -1,6 +1,6 @@
 
-from setting_controller import SettingController
-from model_controller import ModelController
+from controller.setting import SettingController
+from controller.model import ModelController
 
 import streamlit as st
 

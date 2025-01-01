@@ -1,5 +1,5 @@
 
-from setting_controller import SettingController
+from controller.setting import SettingController
 
 import streamlit as st
 
