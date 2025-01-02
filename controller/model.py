@@ -3,7 +3,7 @@ from langchain_ollama import OllamaLLM
 from typing import Dict, Generator
 from ollama import Client
 
-from setting_controller import SettingController
+from controller.setting import SettingController
 
 import pandas as pd
 import humanize
