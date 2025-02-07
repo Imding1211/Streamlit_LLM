@@ -1,5 +1,5 @@
 
-from langchain_ollama import OllamaLLM
+from langchain_ollama import ChatOllama
 from typing import Dict, Generator
 from ollama import Client
 
@@ -7,6 +7,8 @@ from controller.setting import SettingController
 
 import pandas as pd
 import humanize
+import time
+import re
 
 #=============================================================================#
 
@@ -18,7 +20,7 @@ class ModelController():
         self.llm_model         = self.SettingController.setting['llm_model']
         self.base_url          = self.SettingController.setting['base_url']
         self.client            = Client(host=self.base_url)
-        self.llm               = OllamaLLM(model=self.llm_model, base_url=self.base_url)
+        self.llm               = ChatOllama(model=self.llm_model, base_url=self.base_url)
 
 #-----------------------------------------------------------------------------#
 
@@ -41,7 +43,12 @@ class ModelController():
 
 #-----------------------------------------------------------------------------#
 
-    def generate_response(self, messages: Dict) -> Generator:
+    def generate_response(self, messages: list) -> Generator:
         
-        for chunk in self.llm.stream(messages):
-            yield chunk
+        response = self.llm.invoke([(item['role'], item['content']) for item in messages])
+
+        response = re.sub(r"<think>(.*?)</think>", r"```\n思考過程:\n\1```", response.content, flags=re.DOTALL)
+
+        for word in response.split(" "):
+            yield word + " "
+            time.sleep(0.02)

@@ -46,7 +46,7 @@ if question := st.chat_input("輸入問題"):
     with st.chat_message("user", avatar="🦖"):
         st.markdown(question)
 
-    st.session_state.messages.append({"role": "user", "content": question})
+    st.session_state.messages.append({"role": "user", "content": question, "response_time": 0})
 
 #-----------------------------------------------------------------------------#
 
