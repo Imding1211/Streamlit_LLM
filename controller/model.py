@@ -7,7 +7,6 @@ from controller.setting import SettingController
 
 import pandas as pd
 import humanize
-import time
 import re
 
 #=============================================================================#
@@ -50,7 +49,7 @@ class ModelController():
         match = re.search(r"<think>(.*?)</think>\s*(.*)", response.content, re.DOTALL)
 
         if match:
-            think_content    = match.group(1).strip()
+            think_content    = match.group(1).strip().replace("\n", "<br>")
             response_content = match.group(2).strip()
 
             return {"think_content": think_content, "response_content": response_content}

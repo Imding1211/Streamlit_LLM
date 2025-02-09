@@ -3,7 +3,7 @@ from controller.setting import SettingController
 
 import streamlit as st
 
-version = 1.3
+version = 1.4
 
 #=============================================================================#
 
