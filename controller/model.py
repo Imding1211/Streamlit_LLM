@@ -43,12 +43,17 @@ class ModelController():
 
 #-----------------------------------------------------------------------------#
 
-    def generate_response(self, messages: list) -> Generator:
-        
-        response = self.llm.invoke([(item['role'], item['content']) for item in messages])
+    def generate_response(self, messages: list) -> dict:
 
-        response = re.sub(r"<think>(.*?)</think>", r"```\n思考過程:\n\1```", response.content, flags=re.DOTALL)
+        response = self.llm.invoke([(item['role'], item['response_content']) for item in messages])
 
-        for word in response.split(" "):
-            yield word + " "
-            time.sleep(0.02)
+        match = re.search(r"<think>(.*?)</think>\s*(.*)", response.content, re.DOTALL)
+
+        if match:
+            think_content    = match.group(1).strip()
+            response_content = match.group(2).strip()
+
+            return {"think_content": think_content, "response_content": response_content}
+
+        else:
+            return {"think_content": "", "response_content": response.content}
