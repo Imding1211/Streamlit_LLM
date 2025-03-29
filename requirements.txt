@@ -1,5 +1,4 @@
-ollama==0.3.3
-
 langchain_ollama
 streamlit
 humanize
+ollama

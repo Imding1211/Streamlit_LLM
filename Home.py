@@ -59,7 +59,7 @@ for message in st.session_state.messages:
 
 #-----------------------------------------------------------------------------#
 
-if question := st.chat_input("輸入問題"):
+if question := st.chat_input("輸入問題", accept_file=True, file_type=["jpg", "jpeg", "png"]):
 
     with st.chat_message("user", avatar="🦖"):
         st.markdown(question)
