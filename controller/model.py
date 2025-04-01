@@ -1,13 +1,18 @@
 
+from langchain_core.messages import HumanMessage
 from langchain_ollama import ChatOllama
 from typing import Dict, Generator
 from ollama import Client
+from io import BytesIO
+from PIL import Image
 
 from controller.setting import SettingController
 
 import pandas as pd
 import humanize
+import base64
 import re
+
 
 #=============================================================================#
 
@@ -55,3 +60,42 @@ class ModelController():
 
         else:
             return {"think_content": "", "response_content": response.content}
+
+#-----------------------------------------------------------------------------#
+
+    def generate_response_vision(self, text: str, image:str) -> Generator:
+
+        content_parts = []
+
+        if image != "":
+
+            image_part = {
+                "type": "image_url",
+                "image_url": f"data:image/jpeg;base64,{image}"
+                }
+
+            content_parts.append(image_part)
+
+        text_part = {
+            "type": "text", 
+            "text": text
+            }
+            
+        content_parts.append(text_part)
+
+        for chunk in self.llm.stream([HumanMessage(content=content_parts)]):
+             yield chunk.content
+
+#-----------------------------------------------------------------------------#
+
+    def convert_to_base64(self, file_path):
+
+        pil_image = Image.open(file_path)
+
+        buffered = BytesIO()
+        pil_image.save(buffered, format="JPEG")
+
+        img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+
+        return img_str
+

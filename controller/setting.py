@@ -8,7 +8,7 @@ class SettingController():
 	def __init__(self):
 
 		self.default_setting = {
-		    "llm_model": "gemma2:2b",
+		    "llm_model": "gemma3:4b",
 		    "base_url": "http://localhost:11434"
 		}
 
