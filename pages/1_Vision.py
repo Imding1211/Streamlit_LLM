@@ -18,20 +18,19 @@ st.set_page_config(layout="wide")
 
 if "messages_v" not in st.session_state:
     st.session_state.messages_v = [{
-        "role": "system", 
-        "response_content": "使用繁體中文回答問題", 
-        "image_content": "",
-        "image_b64": "",
-        "response_time": 0
-        }]
-
-    st.session_state.messages_v.append({
-        "role": "assistant", 
-        "response_content": "✋ Hi~ 請問想詢問什麼問題呢？", 
-        "image_content": "", 
-        "image_b64": "",
-        "response_time": 0
-        })
+        "role"             : "system", 
+        "response_content" : "使用繁體中文回答問題", 
+        "image_content"    : "",
+        "image_b64"        : "",
+        "response_time"    : 0
+    },
+    {
+        "role"             : "assistant", 
+        "response_content" : "✋ Hi~ 請問想詢問什麼問題呢？", 
+        "image_content"    : "", 
+        "image_b64"        : "",
+        "response_time"    : 0
+    }]
 
 #=============================================================================#
 
@@ -46,10 +45,10 @@ if LLM_MODEL in ["gemma3:1b", "gemma3:4b","gemma3:12b","gemma3:27b", "llama3.2-v
         if message["role"] == "user":
             with st.chat_message("user", avatar="🦖"):
 
-                st.markdown(message["response_content"])
-
                 if message["image_content"] != "":
-                    st.image(message["image_content"], width=300)
+                    st.image(message["image_content"], width=300)                
+
+                st.markdown(message["response_content"])
 
         elif message["role"] == "assistant":
             with st.chat_message("assistant", avatar="🤖"):
@@ -65,30 +64,30 @@ if LLM_MODEL in ["gemma3:1b", "gemma3:4b","gemma3:12b","gemma3:27b", "llama3.2-v
 
         with st.chat_message("user", avatar="🦖"):
 
-            if question and question.text:
-                st.markdown(question.text)
-
             if question and question["files"]:
                 st.image(question["files"][0], width=300)
 
                 image_b64 = ModelController.convert_to_base64(question["files"][0])
 
                 st.session_state.messages_v.append({
-                    "role": "user", 
-                    "response_content": question.text, 
-                    "image_content": question["files"][0], 
-                    "image_b64": image_b64,
-                    "response_time": 0
-                    })
+                    "role"             : "user", 
+                    "response_content" : question.text, 
+                    "image_content"    : question["files"][0], 
+                    "image_b64"        : image_b64,
+                    "response_time"    : 0
+                })
             
             else:
                 st.session_state.messages_v.append({
-                    "role": "user", 
-                    "response_content": question.text, 
-                    "image_content": "", 
-                    "image_b64": "",
-                    "response_time": 0
-                    })
+                    "role"             : "user", 
+                    "response_content" : question.text, 
+                    "image_content"    : "", 
+                    "image_b64"        : "",
+                    "response_time"    : 0
+                })
+
+            if question and question.text:
+                st.markdown(question.text)
 
 #-----------------------------------------------------------------------------#
 
@@ -96,9 +95,10 @@ if LLM_MODEL in ["gemma3:1b", "gemma3:4b","gemma3:12b","gemma3:27b", "llama3.2-v
 
             start_time = time.time()
 
-            response = st.write_stream(ModelController.generate_response_vision(
-                st.session_state.messages_v[-1]["response_content"], 
-                st.session_state.messages_v[-1]["image_b64"]
+            with st.spinner("思考中..."):
+                response = st.write_stream(ModelController.generate_response_vision(
+                    st.session_state.messages_v[-1]["response_content"], 
+                    st.session_state.messages_v[-1]["image_b64"]
                 ))
 
             end_time = time.time()
@@ -106,12 +106,12 @@ if LLM_MODEL in ["gemma3:1b", "gemma3:4b","gemma3:12b","gemma3:27b", "llama3.2-v
             st.caption(f'Response Time: {round(end_time - start_time, 2)}')
 
         st.session_state.messages_v.append({
-            "role": "assistant", 
-            "response_content": response, 
-            "image_content": "", 
-            "image_b64": "",
-            "response_time": round(end_time - start_time, 2)
-            })
+            "role"             : "assistant", 
+            "response_content" : response, 
+            "image_content"    : "", 
+            "image_b64"        : "",
+            "response_time"    : round(end_time - start_time, 2)
+        })
 
 else:
     with st.chat_message("assistant", avatar="🤖"):

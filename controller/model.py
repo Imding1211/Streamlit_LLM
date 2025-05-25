@@ -40,7 +40,7 @@ class ModelController():
             'family'            : [info['details']['family'] for info in json_info['models']],
             'parameter_size'    : [info['details']['parameter_size'] for info in json_info['models']],
             'quantization_level': [info['details']['quantization_level'] for info in json_info['models']]
-            })
+        })
 
         return df_info
 
@@ -72,14 +72,14 @@ class ModelController():
             image_part = {
                 "type": "image_url",
                 "image_url": f"data:image/jpeg;base64,{image}"
-                }
+            }
 
             content_parts.append(image_part)
 
         text_part = {
             "type": "text", 
             "text": text
-            }
+        }
             
         content_parts.append(text_part)
 
@@ -98,4 +98,3 @@ class ModelController():
         img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
         return img_str
-

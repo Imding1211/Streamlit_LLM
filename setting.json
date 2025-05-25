@@ -1,4 +1,4 @@
 {
-    "llm_model": "gemma3:12b",
-    "base_url": "http://10.199.1.230:8082/"
+    "llm_model": "gemma3:4b",
+    "base_url": "http://localhost:11434/"
 }
